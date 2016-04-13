@@ -1,6 +1,5 @@
 package com.trx.inputorlost;
 
-
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
@@ -10,6 +9,7 @@ import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
+import android.preference.PreferenceCategory;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBar;
@@ -130,8 +130,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
     protected boolean isValidFragment(String fragmentName) {
         return PreferenceFragment.class.getName().equals(fragmentName)
                 || FontPreferenceFragment.class.getName().equals(fragmentName)
-                || DataSyncPreferenceFragment.class.getName().equals(fragmentName)
-                || NotificationPreferenceFragment.class.getName().equals(fragmentName);
+                || TimerPreferenceFragment.class.getName().equals(fragmentName);
     }
 
     /**
@@ -170,48 +169,32 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
      * activity is showing a two-pane settings UI.
      */
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    public static class NotificationPreferenceFragment extends PreferenceFragment {
+    public static class TimerPreferenceFragment extends PreferenceFragment {
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
-            addPreferencesFromResource(R.xml.pref_notification);
+            addPreferencesFromResource(R.xml.pref_timer);
             setHasOptionsMenu(true);
+
+            // Create the new ListPref
+            ListPreference customListPref = new ListPreference(getActivity());
+            // Get the Preference Category which we want to add the ListPreference to
+            PreferenceCategory targetCategory = (PreferenceCategory) findPreference("timer_enabled");
+            CharSequence[] entries = new CharSequence[]{"One", "Two", "Three"};
+            CharSequence[] entryValues = new CharSequence[]{ "1", "2", "3" };
+            // IMPORTANT - This is where set entries...looks OK to me
+            customListPref.setEntries(entries);
+            customListPref.setEntryValues(entryValues);
+            customListPref.setPersistent(true);
+            // Add the ListPref to the Pref category
+            targetCategory.addPreference(customListPref);
+
 
             // Bind the summaries of EditText/List/Dialog/Ringtone preferences
             // to their values. When their values change, their summaries are
             // updated to reflect the new value, per the Android Design
             // guidelines.
-            bindPreferenceSummaryToValue(findPreference("notifications_new_message_ringtone"));
-        }
-
-        @Override
-        public boolean onOptionsItemSelected(MenuItem item) {
-            int id = item.getItemId();
-            if (id == android.R.id.home) {
-                startActivity(new Intent(getActivity(), SettingsActivity.class));
-                return true;
-            }
-            return super.onOptionsItemSelected(item);
-        }
-    }
-
-    /**
-     * This fragment shows data and sync preferences only. It is used when the
-     * activity is showing a two-pane settings UI.
-     */
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    public static class DataSyncPreferenceFragment extends PreferenceFragment {
-        @Override
-        public void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
-            addPreferencesFromResource(R.xml.pref_data_sync);
-            setHasOptionsMenu(true);
-
-            // Bind the summaries of EditText/List/Dialog/Ringtone preferences
-            // to their values. When their values change, their summaries are
-            // updated to reflect the new value, per the Android Design
-            // guidelines.
-            bindPreferenceSummaryToValue(findPreference("sync_frequency"));
+            bindPreferenceSummaryToValue(findPreference("timer_enabled"));
         }
 
         @Override

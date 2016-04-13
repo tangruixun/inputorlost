@@ -65,7 +65,7 @@ public class SecretEditText extends EditText {
 
     public void setIsVisible(boolean isVisible){
         mIsVisible = isVisible;
-        resetSpannableString(isVisible == true ? 2.0f : 0.0f);
+        resetSpannableString(isVisible ? 2.0f : 0.0f);
     }
 
     public boolean getIsVisible(){

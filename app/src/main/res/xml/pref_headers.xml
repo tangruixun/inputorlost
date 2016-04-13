@@ -5,16 +5,11 @@
     <header
         android:fragment="com.trx.inputorlost.SettingsActivity$FontPreferenceFragment"
         android:icon="@drawable/ic_info_black_24dp"
-        android:title="@string/pref_header_font" />
+        android:title="@string/pref_title_font_picker" />
 
     <header
-        android:fragment="com.trx.inputorlost.SettingsActivity$NotificationPreferenceFragment"
+        android:fragment="com.trx.inputorlost.SettingsActivity$TimerPreferenceFragment"
         android:icon="@drawable/ic_notifications_black_24dp"
-        android:title="@string/pref_header_notifications" />
-
-    <header
-        android:fragment="com.trx.inputorlost.SettingsActivity$DataSyncPreferenceFragment"
-        android:icon="@drawable/ic_sync_black_24dp"
-        android:title="@string/pref_header_data_sync" />
+        android:title="@string/pref_header_timer" />
 
 </preference-headers>
