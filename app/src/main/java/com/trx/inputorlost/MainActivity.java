@@ -1,8 +1,11 @@
 package com.trx.inputorlost;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -16,12 +19,16 @@ public class MainActivity extends AppCompatActivity {
     //private SecretEditText secretEditText ;
     private EditText secretEditText ;
 
-    private long idle_min = 4000; // 4 seconds after user stops typing
-    final static int INT_DISAPPEAR = 10000;
+    private String idle_min; // 4 seconds after user stops typing
 
     private long last_text_edit = 0;
     private Handler h = new Handler();
     private String TAG = "--->";
+
+    private SharedPreferences sharedPreferences;
+    private boolean bTimerEnabled;
+    private String strFontName;
+    private String strFontSize;
 
     private final TextWatcher tw = new TextWatcher() {
         @Override
@@ -37,14 +44,14 @@ public class MainActivity extends AppCompatActivity {
                 Log.i(TAG, "afterTextChanged");
                 // dispatch after done typing (1 sec after)
                 last_text_edit = System.currentTimeMillis();
-                h.postDelayed(input_finish_checker, idle_min);
+                h.postDelayed(input_finish_checker, Long.parseLong(idle_min));
             }
         }
     };
 
     private Runnable input_finish_checker = new Runnable() {
         public void run() {
-            if (System.currentTimeMillis() > (last_text_edit + idle_min - 500)) {
+            if (System.currentTimeMillis() > (last_text_edit + Long.parseLong(idle_min) - 500)) {
                 Log.i(TAG, "Runnable input_finish_checker");
                 // user hasn't changed the EditText for longer than
                 // the min delay (with half second buffer window)
@@ -63,6 +70,17 @@ public class MainActivity extends AppCompatActivity {
         // secretEditText = new SecretEditText(this);
         secretEditText = (EditText) findViewById(R.id.secrettext);
         secretEditText.addTextChangedListener(tw);
+
+        retriveLatestPref ();
+
+    }
+
+    private void retriveLatestPref() {
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        bTimerEnabled = sharedPreferences.getBoolean(getString(R.string.timer_enabled_key), true);
+        idle_min = sharedPreferences.getString(getString(R.string.timer_list_key), "3000");
+        strFontName = sharedPreferences.getString(getString(R.string.font_list_key), "0");
+        strFontSize = sharedPreferences.getString(getString(R.string.font_size_list_key), "0");
     }
 
     private void fadeText(EditText et) {
@@ -114,5 +132,58 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onResume() {
+        retriveLatestPref ();
+        if (bTimerEnabled) {
+            secretEditText.removeTextChangedListener(tw);
+            secretEditText.addTextChangedListener(tw);
+        } else {
+            secretEditText.removeTextChangedListener(tw);
+        }
+        switch (Integer.valueOf(strFontName)) {
+            case 0:
+                secretEditText.setTypeface(Typeface.SANS_SERIF);
+                break;
+            case 1:
+                secretEditText.setTypeface(Typeface.SERIF);
+                break;
+            case 2:
+                secretEditText.setTypeface(Typeface.MONOSPACE);
+                break;
+            default:
+                secretEditText.setTypeface(Typeface.DEFAULT);
+        }
+
+        switch (Integer.valueOf(strFontSize)) {
+            case 0:
+                secretEditText.setTextSize(8);
+                break;
+            case 1:
+                secretEditText.setTextSize(12);
+                break;
+            case 2:
+                secretEditText.setTextSize(16);
+                break;
+            case 3:
+                secretEditText.setTextSize(20);
+                break;
+            case 4:
+                secretEditText.setTextSize(24);
+                break;
+            case 5:
+                secretEditText.setTextSize(28);
+                break;
+            case 6:
+                secretEditText.setTextSize(32);
+                break;
+            default:
+                secretEditText.setTextSize(20);
+        }
+
+
+        super.onResume();
     }
 }

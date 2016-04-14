@@ -134,6 +134,34 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
     }
 
     /**
+     * This hook is called whenever an item in your options menu is selected.
+     * The default implementation simply returns false to have the normal
+     * processing happen (calling the item's Runnable or sending a message to
+     * its Handler as appropriate).  You can use this method for any items
+     * for which you would like to do processing without those other
+     * facilities.
+     * <p/>
+     * <p>Derived classes should call through to the base class for it to
+     * perform the default menu handling.</p>
+     *
+     * @param item The menu item that was selected.
+     * @return boolean Return false to allow normal menu processing to
+     * proceed, true to consume it here.
+     * @see #onCreateOptionsMenu
+     */
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == android.R.id.home) {
+            startActivity(new Intent(this, MainActivity.class));
+            return false;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+
+    /**
      * This fragment shows general preferences only. It is used when the
      * activity is showing a two-pane settings UI.
      */
@@ -150,7 +178,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             // updated to reflect the new value, per the Android Design
             // guidelines.
             //bindPreferenceSummaryToValue(findPreference("example_text"));
-            bindPreferenceSummaryToValue(findPreference("font_list"));
+            bindPreferenceSummaryToValue(findPreference(getString(R.string.font_size_list_key)));
         }
 
         @Override
@@ -158,12 +186,14 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             int id = item.getItemId();
             if (id == android.R.id.home) {
                 startActivity(new Intent(getActivity(), SettingsActivity.class));
-                return true;
+                return false;
             }
             return super.onOptionsItemSelected(item);
         }
     }
 
+
+    ///////////////////////////////////////////////////////////////////////////////////
     /**
      * This fragment shows notification preferences only. It is used when the
      * activity is showing a two-pane settings UI.
@@ -177,24 +207,28 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             setHasOptionsMenu(true);
 
             // Create the new ListPref
-            ListPreference customListPref = new ListPreference(getActivity());
+            ListPreference timerListPref = new ListPreference(getActivity());
             // Get the Preference Category which we want to add the ListPreference to
-            PreferenceCategory targetCategory = (PreferenceCategory) findPreference("timer_enabled");
+            PreferenceCategory targetCategory = (PreferenceCategory) findPreference("TARGET_CATEGORY");
             CharSequence[] entries = new CharSequence[]{"One", "Two", "Three"};
             CharSequence[] entryValues = new CharSequence[]{ "1", "2", "3" };
             // IMPORTANT - This is where set entries...looks OK to me
-            customListPref.setEntries(entries);
-            customListPref.setEntryValues(entryValues);
-            customListPref.setPersistent(true);
+            timerListPref.setEntries(entries);
+            timerListPref.setEntryValues(entryValues);
+            timerListPref.setPersistent(true);
+            timerListPref.setKey(getString(R.string.timer_list_key));
+            timerListPref.setTitle(R.string.pref_header_timer);
+            //timerListPref.setDependency(getString(R.string.timer_enabled_key));
+            timerListPref.setDefaultValue("3000");
             // Add the ListPref to the Pref category
-            targetCategory.addPreference(customListPref);
+            targetCategory.addPreference(timerListPref);
 
 
             // Bind the summaries of EditText/List/Dialog/Ringtone preferences
             // to their values. When their values change, their summaries are
             // updated to reflect the new value, per the Android Design
             // guidelines.
-            bindPreferenceSummaryToValue(findPreference("timer_enabled"));
+            //bindPreferenceSummaryToValue(findPreference(getString(R.string.timer_enabled_key)));
         }
 
         @Override

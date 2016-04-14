@@ -25,7 +25,7 @@
         android:defaultValue="0"
         android:entries="@array/pref_font_list_titles"
         android:entryValues="@array/pref_font_list_values"
-        android:key="font_list"
+        android:key="@string/font_list_key"
         android:negativeButtonText="@null"
         android:positiveButtonText="@null"
         android:title="@string/pref_title_font_picker" />
@@ -34,7 +34,7 @@
         android:defaultValue="0"
         android:entries="@array/pref_font_size_titles"
         android:entryValues="@array/pref_font_size_values"
-        android:key="font_size_list"
+        android:key="@string/font_size_list_key"
         android:negativeButtonText="@null"
         android:positiveButtonText="@null"
         android:title="@string/pref_title_font_size" />
