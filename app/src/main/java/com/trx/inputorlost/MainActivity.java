@@ -78,7 +78,9 @@ public class MainActivity extends AppCompatActivity {
     private void retriveLatestPref() {
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         bTimerEnabled = sharedPreferences.getBoolean(getString(R.string.timer_enabled_key), true);
-        idle_min = sharedPreferences.getString(getString(R.string.timer_list_key), "3000");
+        int milsec = Integer.valueOf(sharedPreferences.getString(getString(R.string.timer_key), "3000"));
+        milsec *= 1000;
+        idle_min = String.valueOf(milsec);
         strFontName = sharedPreferences.getString(getString(R.string.font_list_key), "0");
         strFontSize = sharedPreferences.getString(getString(R.string.font_size_list_key), "0");
     }
@@ -123,14 +125,12 @@ public class MainActivity extends AppCompatActivity {
         if (id == R.id.action_settings) {
             Intent settingsIntent = new Intent(this, SettingsActivity.class);
             startActivity(settingsIntent);
-
             return true;
         } else if (id == R.id.action_about) {
-            //Intent settingsIntent = new Intent(this, AboutActivity.class);
-            //startActivity(settingsIntent);
+            Intent aboutIntent = new Intent(this, AboutActivity.class);
+            startActivity(aboutIntent);
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 

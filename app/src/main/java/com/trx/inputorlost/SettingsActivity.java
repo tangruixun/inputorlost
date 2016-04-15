@@ -206,23 +206,11 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             addPreferencesFromResource(R.xml.pref_timer);
             setHasOptionsMenu(true);
 
-            // Create the new ListPref
-            ListPreference timerListPref = new ListPreference(getActivity());
+            NumberPickerPreference npp = new NumberPickerPreference(getActivity(), null);
+            npp.setKey(getString(R.string.timer_key));
             // Get the Preference Category which we want to add the ListPreference to
             PreferenceCategory targetCategory = (PreferenceCategory) findPreference("TARGET_CATEGORY");
-            CharSequence[] entries = new CharSequence[]{"One", "Two", "Three"};
-            CharSequence[] entryValues = new CharSequence[]{ "1", "2", "3" };
-            // IMPORTANT - This is where set entries...looks OK to me
-            timerListPref.setEntries(entries);
-            timerListPref.setEntryValues(entryValues);
-            timerListPref.setPersistent(true);
-            timerListPref.setKey(getString(R.string.timer_list_key));
-            timerListPref.setTitle(R.string.pref_header_timer);
-            //timerListPref.setDependency(getString(R.string.timer_enabled_key));
-            timerListPref.setDefaultValue("3000");
-            // Add the ListPref to the Pref category
-            targetCategory.addPreference(timerListPref);
-
+            targetCategory.addPreference(npp);
 
             // Bind the summaries of EditText/List/Dialog/Ringtone preferences
             // to their values. When their values change, their summaries are
