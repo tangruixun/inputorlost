@@ -1,10 +1,12 @@
 package com.trx.inputorlost;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Vibrator;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
@@ -13,13 +15,20 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
 import android.widget.EditText;
+
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 
 public class MainActivity extends AppCompatActivity {
     //private SecretEditText secretEditText ;
+    private Context context;
     private EditText secretEditText ;
 
-    private String idle_min; // 4 seconds after user stops typing
+    private String idle_min; // seconds after user stops typing
+    private boolean bVibrate = true;
 
     private long last_text_edit = 0;
     private Handler h = new Handler();
@@ -29,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
     private boolean bTimerEnabled;
     private String strFontName;
     private String strFontSize;
+    private AdView adView;
 
     private final TextWatcher tw = new TextWatcher() {
         @Override
@@ -40,11 +50,13 @@ public class MainActivity extends AppCompatActivity {
         }
         @Override
         public void afterTextChanged(Editable s) {
-            if (s != null && s.length() > 0 ) {
-                Log.i(TAG, "afterTextChanged");
-                // dispatch after done typing (1 sec after)
-                last_text_edit = System.currentTimeMillis();
-                h.postDelayed(input_finish_checker, Long.parseLong(idle_min));
+            if (bTimerEnabled) {
+                if (s != null && s.length() > 0 ) {
+                    Log.i(TAG, "afterTextChanged");
+                    // dispatch after done typing (1 sec after)
+                    last_text_edit = System.currentTimeMillis();
+                    h.postDelayed(input_finish_checker, Long.parseLong(idle_min));
+                }
             }
         }
     };
@@ -57,6 +69,11 @@ public class MainActivity extends AppCompatActivity {
                 // the min delay (with half second buffer window)
                 secretEditText.removeTextChangedListener(tw);
                 fadeText (secretEditText);  // your queries
+                if (bVibrate) {
+                    Vibrator v = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
+                    // Vibrate for 500 milliseconds
+                    v.vibrate(500);
+                }
                 secretEditText.addTextChangedListener(tw);
 
             }
@@ -67,28 +84,85 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        context = this;
         // secretEditText = new SecretEditText(this);
         secretEditText = (EditText) findViewById(R.id.secrettext);
         secretEditText.addTextChangedListener(tw);
 
         retriveLatestPref ();
 
+        adView = (AdView) findViewById(R.id.adView);
+        final AdRequest adRequest = new AdRequest.Builder().build();
+        adView.loadAd(adRequest);
+
     }
 
     private void retriveLatestPref() {
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         bTimerEnabled = sharedPreferences.getBoolean(getString(R.string.timer_enabled_key), true);
-        int milsec = Integer.valueOf(sharedPreferences.getString(getString(R.string.timer_key), "3000"));
+        int milsec = sharedPreferences.getInt(getString(R.string.timer_key), 3);
         milsec *= 1000;
+        bVibrate = sharedPreferences.getBoolean(getString(R.string.timer_vibrate_key), true);
         idle_min = String.valueOf(milsec);
         strFontName = sharedPreferences.getString(getString(R.string.font_list_key), "0");
         strFontSize = sharedPreferences.getString(getString(R.string.font_size_list_key), "0");
+
     }
 
-    private void fadeText(EditText et) {
+
+    Animation textDisplayAnimationObject;
+    Animation delayBetweenAnimations;
+    Animation fadeOutAnimationObject;
+    int fadeEffectDuration = 700;
+    int delayDuration = 1000;
+    int displayFor = 2000;
+
+    private void fadeText(final EditText et) {
         Log.i (TAG, "fadeText");
         //et.setDuration(INT_DISAPPEAR);     // set fade duration to 3 seconds
         //et.hide();
+
+
+
+
+        textDisplayAnimationObject = new AlphaAnimation(1f, 1f);
+        textDisplayAnimationObject.setDuration(displayFor);
+        delayBetweenAnimations = new AlphaAnimation(0f, 0f);
+        delayBetweenAnimations.setDuration(delayDuration);
+        fadeOutAnimationObject = new AlphaAnimation(1f, 0f);
+        fadeOutAnimationObject.setDuration(fadeEffectDuration);
+        textDisplayAnimationObject.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+                // TODO Auto-generated method stub
+            }
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+                // TODO Auto-generated method stub
+            }
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                // TODO Auto-generated method stub
+                et.startAnimation(fadeOutAnimationObject);
+            }
+        });
+        fadeOutAnimationObject.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+                // TODO Auto-generated method stub
+            }
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+                // TODO Auto-generated method stub
+            }
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                // TODO Auto-generated method stub
+                et.startAnimation(delayBetweenAnimations);
+            }
+        });
+        et.startAnimation(fadeOutAnimationObject);
+
         et.setText("");
     }
 
@@ -183,7 +257,28 @@ public class MainActivity extends AppCompatActivity {
                 secretEditText.setTextSize(20);
         }
 
-
+        if (adView != null) {
+            adView.resume();
+        }
         super.onResume();
+    }
+
+    /**
+     * Dispatch onPause() to fragments.
+     */
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (adView != null) {
+            adView.pause();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (adView != null) {
+            adView.destroy();
+        }
+        super.onDestroy();
     }
 }

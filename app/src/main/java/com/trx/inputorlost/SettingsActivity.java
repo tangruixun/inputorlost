@@ -208,6 +208,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
 
             NumberPickerPreference npp = new NumberPickerPreference(getActivity(), null);
             npp.setKey(getString(R.string.timer_key));
+            npp.setTitle(R.string.set_timer_title);
             // Get the Preference Category which we want to add the ListPreference to
             PreferenceCategory targetCategory = (PreferenceCategory) findPreference("TARGET_CATEGORY");
             targetCategory.addPreference(npp);
