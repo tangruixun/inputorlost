@@ -113,40 +113,25 @@ public class MainActivity extends AppCompatActivity {
     Animation textDisplayAnimationObject;
     Animation delayBetweenAnimations;
     Animation fadeOutAnimationObject;
-    int fadeEffectDuration = 700;
-    int delayDuration = 1000;
-    int displayFor = 2000;
+    int fadeEffectDuration = 400;
+    int delayDuration = 300;
+    int displayFor = 300;
 
     private void fadeText(final EditText et) {
         Log.i (TAG, "fadeText");
         //et.setDuration(INT_DISAPPEAR);     // set fade duration to 3 seconds
         //et.hide();
 
-
-
-
-        textDisplayAnimationObject = new AlphaAnimation(1f, 1f);
+        textDisplayAnimationObject = new AlphaAnimation(1f, 0.2f);
         textDisplayAnimationObject.setDuration(displayFor);
-        delayBetweenAnimations = new AlphaAnimation(0f, 0f);
+
+        delayBetweenAnimations = new AlphaAnimation(0.2f, 1f);
         delayBetweenAnimations.setDuration(delayDuration);
+
         fadeOutAnimationObject = new AlphaAnimation(1f, 0f);
         fadeOutAnimationObject.setDuration(fadeEffectDuration);
+
         textDisplayAnimationObject.setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationStart(Animation animation) {
-                // TODO Auto-generated method stub
-            }
-            @Override
-            public void onAnimationRepeat(Animation animation) {
-                // TODO Auto-generated method stub
-            }
-            @Override
-            public void onAnimationEnd(Animation animation) {
-                // TODO Auto-generated method stub
-                et.startAnimation(fadeOutAnimationObject);
-            }
-        });
-        fadeOutAnimationObject.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
                 // TODO Auto-generated method stub
@@ -161,9 +146,43 @@ public class MainActivity extends AppCompatActivity {
                 et.startAnimation(delayBetweenAnimations);
             }
         });
-        et.startAnimation(fadeOutAnimationObject);
 
-        et.setText("");
+        delayBetweenAnimations.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+                // TODO Auto-generated method stub
+                et.setAlpha(0.45f);
+            }
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+                // TODO Auto-generated method stub
+            }
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                // TODO Auto-generated method stub
+                et.startAnimation(fadeOutAnimationObject);
+            }
+        });
+
+        fadeOutAnimationObject.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+                // TODO Auto-generated method stub
+                et.setAlpha(0.45f);
+            }
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+                // TODO Auto-generated method stub
+            }
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                // TODO Auto-generated method stub
+                et.setText("");
+            }
+        });
+
+        et.startAnimation(textDisplayAnimationObject);
+
     }
 
     @Override
