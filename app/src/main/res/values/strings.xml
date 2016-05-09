@@ -60,4 +60,5 @@
     <string name="set_timer_title">Set Time Out (seconds)</string>
     <string name="copyright_content">TRX</string>
     <string name="close_button">CLOSE</string>
+    <string name="action_share">Share</string>
 </resources>

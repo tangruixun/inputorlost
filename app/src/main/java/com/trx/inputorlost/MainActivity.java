@@ -219,6 +219,15 @@ public class MainActivity extends AppCompatActivity {
             Intent settingsIntent = new Intent(this, SettingsActivity.class);
             startActivity(settingsIntent);
             return true;
+        } else if (id == R.id.action_share) {
+            String shareText = secretEditText.getText().toString();
+            shareText += "\n-- \nvia \"Input Or Lost\"";
+
+            Intent shareIntent = new Intent();
+            shareIntent.setAction(Intent.ACTION_SEND);
+            shareIntent.putExtra(Intent.EXTRA_TEXT, shareText);
+            shareIntent.setType("text/plain");
+            startActivity(shareIntent);
         } else if (id == R.id.action_about) {
             Intent aboutIntent = new Intent(this, AboutActivity.class);
             startActivity(aboutIntent);
