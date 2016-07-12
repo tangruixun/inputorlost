@@ -8,8 +8,8 @@ android {
         applicationId "com.trx.inputorlost"
         minSdkVersion 21
         targetSdkVersion 24
-        versionCode 5
-        versionName "1.111"
+        versionCode 6
+        versionName "1.112"
     }
     buildTypes {
         release {

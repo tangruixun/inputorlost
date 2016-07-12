@@ -105,7 +105,7 @@ public class MainActivity extends AppCompatActivity {
         bVibrate = sharedPreferences.getBoolean(getString(R.string.timer_vibrate_key), true);
         idle_min = String.valueOf(milsec);
         strFontName = sharedPreferences.getString(getString(R.string.font_list_key), "0");
-        strFontSize = sharedPreferences.getString(getString(R.string.font_size_list_key), "0");
+        strFontSize = sharedPreferences.getString(getString(R.string.font_size_list_key), "3");
 
     }
 

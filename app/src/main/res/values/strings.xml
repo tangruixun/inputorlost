@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">InputOrLost</string>
+    <string name="app_name">Input Or Lost</string>
     <string name="continue_input">Continue input here or lost it…</string>
     <string name="action_settings">Settings</string>
     <string name="action_about">About</string>
