@@ -1,15 +1,15 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 23
+    compileSdkVersion 24
     buildToolsVersion "24.0.0"
 
     defaultConfig {
         applicationId "com.trx.inputorlost"
         minSdkVersion 21
-        targetSdkVersion 23
-        versionCode 3
-        versionName "1.011"
+        targetSdkVersion 24
+        versionCode 5
+        versionName "1.111"
     }
     buildTypes {
         release {
