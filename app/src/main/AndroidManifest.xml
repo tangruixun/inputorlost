@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.trx.inputorlost">
     <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
 
     <application
         android:allowBackup="true"
@@ -23,7 +24,7 @@
             android:name=".AboutActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_about"
-            android:theme="@style/FullscreenTheme"></activity>
+            android:theme="@style/FullscreenTheme" />
     </application>
 
 </manifest>
